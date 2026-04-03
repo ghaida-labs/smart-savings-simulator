@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>محاكي الادخار الذكي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ======== Reset & Base ======== */
+    * {margin:0; padding:0; box-sizing:border-box;}
+    body {font-family: 'Inter', sans-serif; line-height:1.6; background:#f5f7fa; color:#333;}
+    a {text-decoration:none; color:inherit;}
+
+    /* ======== Header ======== */
+    header {
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      color:#fff;
+      text-align:center;
+      padding:60px 20px;
+    }
+    header h1 {font-size:2.8rem; margin-bottom:15px;}
+    header p {font-size:1.2rem;}
+
+    /* ======== Section Styling ======== */
+    section {padding:60px 20px; max-width:900px; margin:0 auto;}
+
+    h2 {text-align:center; margin-bottom:40px; font-size:2rem; color:#2e7d32;}
+
+    /* ======== Simulator Box ======== */
+    .simulator {
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.1);
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+    .simulator input[type="number"] {
+      padding:12px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      width:100%;
+      font-size:1rem;
+    }
+    .simulator button {
+      background:#4caf50;
+      color:#fff;
+      padding:15px;
+      border:none;
+      border-radius:8px;
+      font-size:1.1rem;
+      cursor:pointer;
+      transition:0.3s;
+    }
+    .simulator button:hover {background:#388e3c;}
+
+    /* ======== Results ======== */
+    .results {
+      background:#e8f5e9;
+      padding:20px;
+      border-radius:10px;
+      text-align:center;
+      font-size:1.2rem;
+      display:none;
+    }
+
+    /* ======== How it works ======== */
+    .steps {
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+    .step {
+      background:#fff;
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.05);
+      display:flex;
+      align-items:center;
+      gap:15px;
+    }
+    .step span.icon {
+      font-size:2rem;
+      color:#4caf50;
+      min-width:40px;
+      text-align:center;
+    }
+
+    /* ======== Footer ======== */
+    footer {
+      background:#2e7d32;
+      color:#fff;
+      text-align:center;
+      padding:30px 20px;
+      margin-top:40px;
+    }
+
+    /* ======== Responsive ======== */
+    @media(max-width:768px){
+      .steps {flex-direction:column;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>محاكي الادخار الذكي</h1>
+    <p>خطط مستقبلك المالي بسهولة وابدأ بادخار أموالك بذكاء!</p>
+  </header>
+
+  <!-- Simulator Section -->
+  <section>
+    <h2>ابدأ المحاكاة</h2>
+    <div class="simulator">
+      <input type="number" id="monthlySaving" placeholder="ادخل مبلغ الادخار الشهري (ريال)">
+      <input type="number" id="months" placeholder="عدد الشهور">
+      <input type="number" id="interestRate" placeholder="نسبة الفائدة السنوية (%)">
+      <button onclick="calculateSavings()">احسب الادخار</button>
+      <div class="results" id="results"></div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section>
+    <h2>كيف يعمل المحاكي؟</h2>
+    <div class="steps">
+      <div class="step"><span class="icon">💰</span>أدخل المبلغ الشهري الذي ترغب بادخاره.</div>
+      <div class="step"><span class="icon">📅</span>حدد عدد الشهور التي تريد الادخار خلالها.</div>
+      <div class="step"><span class="icon">📈</span>أدخل نسبة الفائدة السنوية المتوقعة.</div>
+      <div class="step"><span class="icon">🎯</span>اضغط "احسب الادخار" لمعرفة النتائج فوراً.</div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2026 Ghaida Labs - جميع الحقوق محفوظة
+  </footer>
+
+  <!-- JS -->
+  <script>
+    function calculateSavings() {
+      const monthly = parseFloat(document.getElementById('monthlySaving').value);
+      const months = parseInt(document.getElementById('months').value);
+      const rate = parseFloat(document.getElementById('interestRate').value);
+
+      if(isNaN(monthly) || isNaN(months) || isNaN(rate)){
+        alert("الرجاء إدخال جميع القيم بشكل صحيح");
+        return;
+      }
+
+      let total = 0;
+      let monthlyRate = rate / 100 / 12;
+
+      for(let i=0; i<months; i++){
+        total = (total + monthly) * (1 + monthlyRate);
+      }
+
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').innerHTML = 
+        `إجمالي الادخار بعد ${months} شهر: <strong>${total.toFixed(2)} ريال</strong>`;
+    }
+  </script>
+
+</body>
+</html>
