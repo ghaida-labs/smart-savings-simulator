@@ -3,175 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>محاكي الادخار الذكي - متحرك</title>
+  <title>Smart Savings Simulator</title>
+
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
       font-family:'Inter',sans-serif;
-      line-height:1.6;
       min-height:100vh;
       color:#333;
-      overflow-x:hidden;
     }
 
-    /* ======= Animated Background ======= */
     body::before{
       content:"";
       position:fixed;
-      top:0; left:0;
       width:100%; height:100%;
-      background: linear-gradient(270deg, #e0f7fa, #b2ebf2, #80deea, #4dd0e1, #26c6da);
+      background: linear-gradient(270deg,#e0f7fa,#80deea,#26c6da);
       background-size:1000% 1000%;
       z-index:-1;
-      animation: gradientMove 30s ease infinite;
+      animation: gradientMove 30s infinite;
     }
+
     @keyframes gradientMove{
-      0%{background-position:0% 50%;}
-      50%{background-position:100% 50%;}
-      100%{background-position:0% 50%;}
+      0%{background-position:0%}
+      50%{background-position:100%}
+      100%{background-position:0%}
     }
 
-    /* ======= Header ======= */
-    header{
-      text-align:center;
-      padding:60px 20px;
-      color:#fff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    header h1{font-size:2.8rem;margin-bottom:15px;}
-    header p{font-size:1.2rem;}
+    header{text-align:center;padding:60px;color:#fff;}
+    h2{text-align:center;margin:30px 0;color:#004d40;}
 
-    section{padding:60px 20px; max-width:900px; margin:0 auto;}
-    h2{text-align:center;margin-bottom:40px;font-size:2rem;color:#004d40;}
+    section{max-width:900px;margin:auto;padding:20px;}
 
-    /* ======= Glass Boxes ======= */
-    .simulator, .step, .results{
-      background: rgba(255,255,255,0.25);
-      backdrop-filter: blur(12px);
+    .box{
+      background:rgba(255,255,255,0.25);
+      backdrop-filter:blur(10px);
       border-radius:15px;
-      padding:30px;
-      box-shadow:0 10px 25px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding:25px;
     }
 
-    .simulator:hover, .step:hover{
-      transform: translateY(-5px);
-      box-shadow:0 20px 35px rgba(0,0,0,0.15);
-    }
-
-    input[type="number"]{
-      padding:12px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,0.5);
-      width:100%;
-      font-size:1rem;
-      background: rgba(255,255,255,0.4);
-      backdrop-filter: blur(6px);
-      margin-bottom:10px;
+    input,button{
+      width:100%;padding:12px;margin:8px 0;border-radius:8px;border:none;
     }
 
     button{
-      background: linear-gradient(135deg,#26c6da,#00acc1);
-      color:#fff;
-      padding:15px;
-      border:none;
+      background:#00acc1;color:#fff;cursor:pointer;
+    }
+
+    .results{display:none;margin-top:10px;text-align:center;}
+
+    canvas{margin-top:20px;}
+
+    .lang-btn{
+      position:absolute;
+      top:20px;
+      right:20px;
+      background:#fff;
+      padding:8px 15px;
       border-radius:8px;
-      font-size:1.1rem;
       cursor:pointer;
-      transition:0.3s;
-      width:100%;
     }
-    button:hover{background: linear-gradient(135deg,#0097a7,#00bcd4);}
-
-    /* ======= Results ======= */
-    .results{
-      display:none;
-      font-size:1.2rem;
-      text-align:center;
-      margin-top:15px;
-      animation: fadeIn 0.6s forwards;
-    }
-    @keyframes fadeIn{
-      0%{opacity:0; transform: translateY(10px);}
-      100%{opacity:1; transform: translateY(0);}
-    }
-
-    /* ======= Steps ======= */
-    .steps{display:flex; flex-direction:column; gap:20px;}
-    .step{display:flex; align-items:center; gap:15px;}
-    .step span.icon{font-size:2rem; color:#26c6da; min-width:40px; text-align:center;}
-
-    footer{
-      text-align:center;
-      padding:30px 20px;
-      color:#fff;
-      margin-top:40px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    @media(max-width:768px){.steps{flex-direction:column;}}
   </style>
 </head>
+
 <body>
 
-  <!-- Header -->
-  <header>
-    <h1>محاكي الادخار الذكي</h1>
-    <p>خطط مستقبلك المالي بسهولة وابدأ بادخار أموالك بذكاء!</p>
-  </header>
+<button class="lang-btn" onclick="toggleLang()">EN</button>
 
-  <!-- Simulator Section -->
-  <section>
-    <h2>ابدأ المحاكاة</h2>
-    <div class="simulator">
-      <input type="number" id="monthlySaving" placeholder="ادخل مبلغ الادخار الشهري (ريال)">
-      <input type="number" id="months" placeholder="عدد الشهور">
-      <input type="number" id="interestRate" placeholder="نسبة الفائدة السنوية (%)">
-      <button onclick="calculateSavings()">احسب الادخار</button>
-      <div class="results" id="results"></div>
-    </div>
-  </section>
+<header>
+  <h1 id="title">محاكي الادخار الذكي</h1>
+  <p id="desc">ابدأ التخطيط لمستقبلك المالي</p>
+</header>
 
-  <!-- How it works -->
-  <section>
-    <h2>كيف يعمل المحاكي؟</h2>
-    <div class="steps">
-      <div class="step"><span class="icon">💰</span>أدخل المبلغ الشهري الذي ترغب بادخاره.</div>
-      <div class="step"><span class="icon">📅</span>حدد عدد الشهور التي تريد الادخار خلالها.</div>
-      <div class="step"><span class="icon">📈</span>أدخل نسبة الفائدة السنوية المتوقعة.</div>
-      <div class="step"><span class="icon">🎯</span>اضغط "احسب الادخار" لمعرفة النتائج فوراً.</div>
-    </div>
-  </section>
+<section>
+  <h2 id="start">ابدأ المحاكاة</h2>
+  <div class="box">
 
-  <!-- Footer -->
-  <footer>
-    &copy; 2026 Ghaida Labs - جميع الحقوق محفوظة
-  </footer>
+    <input type="number" id="monthly" placeholder="المبلغ الشهري">
 
-  <!-- JS -->
-  <script>
-    function calculateSavings(){
-      const monthly=parseFloat(document.getElementById('monthlySaving').value);
-      const months=parseInt(document.getElementById('months').value);
-      const rate=parseFloat(document.getElementById('interestRate').value);
+    <input type="number" id="years" placeholder="عدد السنوات">
 
-      if(isNaN(monthly)||isNaN(months)||isNaN(rate)){
-        alert("الرجاء إدخال جميع القيم بشكل صحيح"); return;
-      }
+    <input type="number" id="rate" placeholder="نسبة الفائدة %">
 
-      let total=0;
-      let monthlyRate=rate/100/12;
+    <button onclick="calc()" id="btn">احسب</button>
 
-      for(let i=0;i<months;i++){
-        total=(total+monthly)*(1+monthlyRate);
-      }
+    <div class="results" id="result"></div>
 
-      const resultsDiv=document.getElementById('results');
-      resultsDiv.style.display='block';
-      resultsDiv.innerHTML=`إجمالي الادخار بعد ${months} شهر: <strong>${total.toFixed(2)} ريال</strong>`;
+    <canvas id="chart"></canvas>
+
+  </div>
+</section>
+
+<script>
+let chart;
+let lang="ar";
+
+function toggleLang(){
+  lang = lang==="ar" ? "en" : "ar";
+
+  document.getElementById("title").innerText =
+    lang==="ar" ? "محاكي الادخار الذكي" : "Smart Savings Simulator";
+
+  document.getElementById("desc").innerText =
+    lang==="ar" ? "ابدأ التخطيط لمستقبلك المالي" : "Plan your financial future";
+
+  document.getElementById("start").innerText =
+    lang==="ar" ? "ابدأ المحاكاة" : "Start Simulation";
+
+  document.getElementById("btn").innerText =
+    lang==="ar" ? "احسب" : "Calculate";
+
+  document.querySelector(".lang-btn").innerText =
+    lang==="ar" ? "EN" : "AR";
+}
+
+function calc(){
+  let m = parseFloat(document.getElementById("monthly").value);
+  let y = parseInt(document.getElementById("years").value);
+  let r = parseFloat(document.getElementById("rate").value)/100;
+
+  if(isNaN(m)||isNaN(y)||isNaN(r)){
+    alert(lang==="ar"?"ادخل القيم صح":"Enter valid values");
+    return;
+  }
+
+  let months = y*12;
+  let monthlyRate = r/12;
+
+  let total=0;
+  let data=[];
+  let labels=[];
+
+  for(let i=1;i<=months;i++){
+    total=(total+m)*(1+monthlyRate);
+
+    if(i%12===0){
+      data.push(total.toFixed(0));
+      labels.push((i/12)+(lang==="ar"?" سنة":" yr"));
     }
-  </script>
+  }
+
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").innerHTML =
+    (lang==="ar"?"النتيجة: ":"Result: ") + total.toFixed(2);
+
+  if(chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("chart"),{
+    type:"line",
+    data:{
+      labels:labels,
+      datasets:[{
+        label: lang==="ar"?"نمو الادخار":"Savings Growth",
+        data:data
+      }]
+    }
+  });
+}
+</script>
 
 </body>
 </html>
