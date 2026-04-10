@@ -17,7 +17,7 @@ body{
   color:#fff;
 }
 
-/* خلفية متحركة */
+/* 🔵 خلفية متحركة */
 body::before{
   content:"";
   position:fixed;
@@ -36,6 +36,7 @@ body::before{
 
 header{text-align:center;padding:60px;}
 
+/* 🌐 زر اللغة */
 .lang-btn{
   position:absolute;
   top:20px;
@@ -48,11 +49,28 @@ header{text-align:center;padding:60px;}
   background:rgba(255,255,255,0.2);
   backdrop-filter:blur(10px);
   color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  transition:0.3s;
 }
 
-section{max-width:900px;margin:auto;padding:20px;}
+.lang-btn:hover{
+  transform:scale(1.1);
+}
 
-h2{text-align:center;margin:20px 0;color:#bfdbfe;}
+section{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+h2{
+  text-align:center;
+  margin:20px 0;
+  color:#bfdbfe;
+}
 
 .box{
   background:rgba(255,255,255,0.15);
@@ -69,7 +87,10 @@ input,button{
   border:none;
 }
 
-input{background:rgba(255,255,255,0.2);color:#fff;}
+input{
+  background:rgba(255,255,255,0.2);
+  color:#fff;
+}
 
 button{
   background:#2563eb;
@@ -78,7 +99,9 @@ button{
   font-weight:600;
 }
 
-button:hover{background:#1d4ed8;}
+button:hover{
+  background:#1d4ed8;
+}
 
 /* ✨ نتيجة مع أنيميشن */
 .results{
@@ -109,9 +132,16 @@ button:hover{background:#1d4ed8;}
   color:#bfdbfe;
 }
 
-.step{margin:10px 0;font-size:1.1rem;}
-canvas{margin-top:20px;}
+.step{
+  margin:10px 0;
+  font-size:1.1rem;
+}
 
+canvas{
+  margin-top:20px;
+}
+
+/* 📌 الفوتر */
 footer{
   text-align:center;
   padding:30px;
@@ -156,10 +186,6 @@ footer{
 <div class="step">🎯 <span id="s4">احصل على النتائج والرسم البياني</span></div>
 </div>
 </section>
-
-<footer>
-© 2026 جميع الحقوق محفوظة
-</footer>
 
 <script>
 let chart;
