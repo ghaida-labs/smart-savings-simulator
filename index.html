@@ -17,7 +17,7 @@ body{
   color:#fff;
 }
 
-/* 🔵 خلفية زرقاء متدرجة متحركة */
+/* خلفية متحركة */
 body::before{
   content:"";
   position:fixed;
@@ -34,18 +34,13 @@ body::before{
   100%{background-position:0%}
 }
 
-header{
-  text-align:center;
-  padding:60px;
-}
+header{text-align:center;padding:60px;}
 
-/* 🌐 زر اللغة (دائري) */
 .lang-btn{
   position:absolute;
   top:20px;
   right:20px;
-  width:50px;
-  height:50px;
+  width:50px;height:50px;
   border-radius:50%;
   border:none;
   font-size:20px;
@@ -53,28 +48,11 @@ header{
   background:rgba(255,255,255,0.2);
   backdrop-filter:blur(10px);
   color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 5px 15px rgba(0,0,0,0.3);
-  transition:0.3s;
 }
 
-.lang-btn:hover{
-  transform:scale(1.1);
-}
+section{max-width:900px;margin:auto;padding:20px;}
 
-section{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
-
-h2{
-  text-align:center;
-  margin:20px 0;
-  color:#bfdbfe;
-}
+h2{text-align:center;margin:20px 0;color:#bfdbfe;}
 
 .box{
   background:rgba(255,255,255,0.15);
@@ -91,10 +69,7 @@ input,button{
   border:none;
 }
 
-input{
-  background:rgba(255,255,255,0.2);
-  color:#fff;
-}
+input{background:rgba(255,255,255,0.2);color:#fff;}
 
 button{
   background:#2563eb;
@@ -103,27 +78,40 @@ button{
   font-weight:600;
 }
 
-button:hover{
-  background:#1d4ed8;
-}
+button:hover{background:#1d4ed8;}
 
+/* ✨ نتيجة مع أنيميشن */
 .results{
   display:none;
   text-align:center;
-  margin-top:10px;
+  margin-top:15px;
   font-size:18px;
+  opacity:0;
+  transform:scale(0.95);
+  transition:0.5s;
 }
 
-.step{
-  margin:10px 0;
-  font-size:1.1rem;
+.results.show{
+  display:block;
+  opacity:1;
+  transform:scale(1);
 }
 
-canvas{
-  margin-top:20px;
+.note{
+  font-size:14px;
+  margin-top:10px;
+  color:#dbeafe;
 }
 
-/* 📌 الفوتر */
+.compare{
+  margin-top:10px;
+  font-size:16px;
+  color:#bfdbfe;
+}
+
+.step{margin:10px 0;font-size:1.1rem;}
+canvas{margin-top:20px;}
+
 footer{
   text-align:center;
   padding:30px;
@@ -225,6 +213,8 @@ function calc(){
   let monthlyRate = r/12;
 
   let total=0;
+  let noInterest = m * months;
+
   let data=[];
   let labels=[];
 
@@ -237,9 +227,26 @@ function calc(){
     }
   }
 
-  document.getElementById("result").style.display="block";
-  document.getElementById("result").innerHTML =
-    (lang==="ar"?"النتيجة: ":"Result: ") + total.toFixed(2);
+  let resultBox=document.getElementById("result");
+
+  resultBox.classList.add("show");
+
+  resultBox.innerHTML =
+    (lang==="ar"
+      ? `النتيجة: <strong>${total.toFixed(2)}</strong> ريال`
+      : `Result: <strong>${total.toFixed(2)}</strong>`) +
+
+    `<div class="note">${
+      lang==="ar"
+      ? "هذا المبلغ يشمل تأثير الفائدة المركبة عبر الزمن"
+      : "This includes compound interest over time"
+    }</div>` +
+
+    `<div class="compare">${
+      lang==="ar"
+      ? "بدون فائدة: "
+      : "Without interest: "
+    } ${noInterest.toFixed(2)}</div>`;
 
   if(chart) chart.destroy();
 
