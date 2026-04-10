@@ -1,102 +1,137 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Savings Simulator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Savings Simulator</title>
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
 
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{
-      font-family:'Inter',sans-serif;
-      min-height:100vh;
-      color:#333;
-    }
+body{
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  color:#333;
+}
 
-    body::before{
-      content:"";
-      position:fixed;
-      width:100%; height:100%;
-      background: linear-gradient(270deg,#e0f7fa,#80deea,#26c6da);
-      background-size:1000% 1000%;
-      z-index:-1;
-      animation: gradientMove 30s infinite;
-    }
+/* خلفية متحركة */
+body::before{
+  content:"";
+  position:fixed;
+  width:100%;height:100%;
+  background: linear-gradient(270deg,#e0f7fa,#80deea,#26c6da);
+  background-size:1000% 1000%;
+  z-index:-1;
+  animation: move 25s infinite;
+}
 
-    @keyframes gradientMove{
-      0%{background-position:0%}
-      50%{background-position:100%}
-      100%{background-position:0%}
-    }
+@keyframes move{
+  0%{background-position:0%}
+  50%{background-position:100%}
+  100%{background-position:0%}
+}
 
-    header{text-align:center;padding:60px;color:#fff;}
-    h2{text-align:center;margin:30px 0;color:#004d40;}
+header{
+  text-align:center;
+  padding:60px;
+  color:#fff;
+}
 
-    section{max-width:900px;margin:auto;padding:20px;}
+/* زر اللغة */
+.lang-btn{
+  position:absolute;
+  top:20px;
+  right:20px;
+  background:rgba(255,255,255,0.9);
+  padding:10px 18px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+  border:none;
+  box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
 
-    .box{
-      background:rgba(255,255,255,0.25);
-      backdrop-filter:blur(10px);
-      border-radius:15px;
-      padding:25px;
-    }
+section{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
 
-    input,button{
-      width:100%;padding:12px;margin:8px 0;border-radius:8px;border:none;
-    }
+h2{text-align:center;margin:20px 0;color:#004d40;}
 
-    button{
-      background:#00acc1;color:#fff;cursor:pointer;
-    }
+.box{
+  background:rgba(255,255,255,0.25);
+  backdrop-filter:blur(10px);
+  padding:25px;
+  border-radius:15px;
+}
 
-    .results{display:none;margin-top:10px;text-align:center;}
+input,button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  border:none;
+}
 
-    canvas{margin-top:20px;}
+button{
+  background:#00acc1;
+  color:#fff;
+  cursor:pointer;
+}
 
-    .lang-btn{
-      position:absolute;
-      top:20px;
-      right:20px;
-      background:#fff;
-      padding:8px 15px;
-      border-radius:8px;
-      cursor:pointer;
-    }
-  </style>
+.results{
+  display:none;
+  text-align:center;
+  margin-top:10px;
+}
+
+.step{
+  margin:10px 0;
+  font-size:1.1rem;
+}
+
+canvas{margin-top:20px;}
+</style>
 </head>
 
 <body>
 
-<button class="lang-btn" onclick="toggleLang()">EN</button>
+<button class="lang-btn" onclick="toggleLang()">🌐 العربية | English</button>
 
 <header>
-  <h1 id="title">محاكي الادخار الذكي</h1>
-  <p id="desc">ابدأ التخطيط لمستقبلك المالي</p>
+<h1 id="title">محاكي الادخار الذكي</h1>
+<p id="desc">ابدأ التخطيط لمستقبلك المالي</p>
 </header>
 
 <section>
-  <h2 id="start">ابدأ المحاكاة</h2>
-  <div class="box">
+<h2 id="start">ابدأ المحاكاة</h2>
 
-    <input type="number" id="monthly" placeholder="المبلغ الشهري">
+<div class="box">
+<input type="number" id="monthly" placeholder="المبلغ الشهري">
+<input type="number" id="years" placeholder="عدد السنوات">
+<input type="number" id="rate" placeholder="نسبة الفائدة %">
 
-    <input type="number" id="years" placeholder="عدد السنوات">
+<button onclick="calc()" id="btn">احسب</button>
 
-    <input type="number" id="rate" placeholder="نسبة الفائدة %">
+<div class="results" id="result"></div>
 
-    <button onclick="calc()" id="btn">احسب</button>
+<canvas id="chart"></canvas>
+</div>
+</section>
 
-    <div class="results" id="result"></div>
+<section>
+<h2 id="how">كيف يعمل المحاكي؟</h2>
 
-    <canvas id="chart"></canvas>
-
-  </div>
+<div class="box">
+<div class="step">💰 <span id="s1">أدخل مبلغ الادخار الشهري</span></div>
+<div class="step">📅 <span id="s2">حدد عدد السنوات</span></div>
+<div class="step">📈 <span id="s3">أدخل نسبة الفائدة</span></div>
+<div class="step">🎯 <span id="s4">احصل على النتائج والرسم البياني</span></div>
+</div>
 </section>
 
 <script>
@@ -105,6 +140,9 @@ let lang="ar";
 
 function toggleLang(){
   lang = lang==="ar" ? "en" : "ar";
+
+  document.documentElement.lang = lang;
+  document.body.dir = lang==="ar" ? "rtl" : "ltr";
 
   document.getElementById("title").innerText =
     lang==="ar" ? "محاكي الادخار الذكي" : "Smart Savings Simulator";
@@ -115,11 +153,23 @@ function toggleLang(){
   document.getElementById("start").innerText =
     lang==="ar" ? "ابدأ المحاكاة" : "Start Simulation";
 
+  document.getElementById("how").innerText =
+    lang==="ar" ? "كيف يعمل المحاكي؟" : "How does it work?";
+
   document.getElementById("btn").innerText =
     lang==="ar" ? "احسب" : "Calculate";
 
-  document.querySelector(".lang-btn").innerText =
-    lang==="ar" ? "EN" : "AR";
+  document.getElementById("s1").innerText =
+    lang==="ar" ? "أدخل مبلغ الادخار الشهري" : "Enter monthly savings";
+
+  document.getElementById("s2").innerText =
+    lang==="ar" ? "حدد عدد السنوات" : "Choose number of years";
+
+  document.getElementById("s3").innerText =
+    lang==="ar" ? "أدخل نسبة الفائدة" : "Enter interest rate";
+
+  document.getElementById("s4").innerText =
+    lang==="ar" ? "احصل على النتائج والرسم البياني" : "Get results and chart";
 }
 
 function calc(){
